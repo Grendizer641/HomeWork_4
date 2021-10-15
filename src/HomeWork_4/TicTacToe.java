@@ -41,7 +41,7 @@ public class TicTacToe {
                 System.out.println("Победил человек");
                 break;
             }
-            if (isDraw()){
+            if (isDraw()) {
                 System.out.println("Ничья");
                 break;
             }
@@ -53,7 +53,7 @@ public class TicTacToe {
                 System.out.println("Победил компьютер");
                 break;
             }
-            if (isDraw()){
+            if (isDraw()) {
                 System.out.println("Ничья");
                 break;
             }
@@ -126,12 +126,46 @@ public class TicTacToe {
     }
 
     private static void aiTurn() {
-        do {
-            x = random.nextInt(SIZE);
-            y = random.nextInt(SIZE);
-        } while (!(map[x][y] == DOT_EMPTY));
+        if (isAiMoveRandom()) {
+            do {
+                x = random.nextInt(SIZE); // Вот тут я не совсем понял, почему нельзя использовать существующие
+                y = random.nextInt(SIZE); // переменные row и col. Иначе ломается. random.nextInt так работает?
+            } while (!(map[x][y] == DOT_EMPTY));
 
-        map[x][y] = DOT_0;
+            map[x][y] = DOT_0;
+        } else {
+            outer: for (int i = 0; i < SIZE; i++) {
+                for (int j = 0; j < SIZE; j++) {
+                    if (map[i][j] == DOT_EMPTY) {
+                        map[i][j] = DOT_X;
+                        if (isWin(DOT_X)) {
+                            map[i][j] = DOT_0;
+                            break outer;
+                        } else {
+                            map[i][j] = DOT_EMPTY;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private static boolean isAiMoveRandom() { // Проверяем, рандомно ли будет ходить АИ
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (map[i][j] == DOT_EMPTY) {
+                    map[i][j] = DOT_X;
+                    if (isWin(DOT_X)) {
+                        map[i][j] = DOT_EMPTY;
+                        return false;
+                    } else {
+                        map[i][j] = DOT_EMPTY;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private static void humanTurn() {
